@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block title %}Assets{% endblock %}
+
+{% block content %}
+<h1>Assets</h1>
+{% for asset in assets %}
+    <p>{{ asset.asset_name }} - {{ asset.get_type_display }} - {{ asset.get_status_display }}</p>
+{% endfor %}
+
+{% endblock %}
+</body>
+</html>

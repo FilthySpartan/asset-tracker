@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Asset Details</title>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}{{ asset.asset_name }}{% endblock %}
+
+    {% block content %}
+        <h1>{{ asset.asset_name }}</h1>
+        <p>Type: {{ asset.get_type_display }}</p>
+        <p>Status: {{ asset.get_status_display }}</p>
+        <p>Cost: £{{ asset.cost }}</p>
+        <p>Last PAT Test: {{ asset.last_pat_test|default:"N/A" }}</p>
+        <p>Warranty Expires: {{ asset.end_of_warranty|default:"N/A" }}</p>
+        <a href="{% url 'assets:asset_list' %}">Back to list</a>
+        <button onclick="window.location.href='{% url 'assets:asset_update' asset.id %}'">Edit</button>
+        <button onclick="window.location.href='{% url 'assets:asset_delete' asset.id %}'">Delete</button>
+    {% endblock %}
+</body>
+</html>

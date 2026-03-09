@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Asset</title>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Update Asset{% endblock %}
+
+    {% block content %}
+        <h1>Add Asset</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <button type="submit">Save</button>
+        </form>
+        <a href="{% url 'assets:asset_list' %}">Cancel</a>
+    {% endblock %}
+</body>
+</html>

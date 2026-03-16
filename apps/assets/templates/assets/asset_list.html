@@ -5,6 +5,7 @@
 
     {% block content %}
     <h1>Assets</h1>
+
     {% for asset in assets %}
         <p>
             <a href="{% url 'assets:asset_detail' asset.id %}">

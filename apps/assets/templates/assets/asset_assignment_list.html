@@ -1,0 +1,16 @@
+
+    {% extends "base.html" %}
+
+    {% block title %}Assignments{% endblock %}
+
+    {% block content %}
+    <h1>Assignments</h1>
+    {% for assignment in asset_assignments %}
+        <p>
+            <a href="{% url 'assets:asset_assignment_detail' assignment.id %}">
+            {{ assignment }}
+            </a>
+        </p>
+    {% endfor %}
+
+    {% endblock %}

@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% extends "base.html" %}
 
-{% block title %}Assets{% endblock %}
+    {% extends "base.html" %}
 
-{% block content %}
-<h1>Assets</h1>
-{% for asset in assets %}
-    <p>{{ asset.asset_name }} - {{ asset.get_type_display }} - {{ asset.get_status_display }}</p>
-{% endfor %}
+    {% block title %}Assets{% endblock %}
 
-{% endblock %}
-</body>
-</html>
+    {% block content %}
+    <h1>Assets</h1>
+
+    {% for asset in assets %}
+        <p>
+            <a href="{% url 'assets:asset_detail' asset.id %}">
+            {{ asset.asset_name }} - {{ asset.get_type_display }} - {{ asset.get_status_display }}
+            </a>
+        </p>
+    {% endfor %}
+
+    {% endblock %}

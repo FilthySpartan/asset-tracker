@@ -8,6 +8,13 @@
 <body>
     <nav>
         <a href="{% url 'assets:asset_list' %}">Assets</a>
+        {%  if user.is_authenticated  %}
+            <span>Logged in as {{ user.username }}</span>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+            <a href="{% url 'accounts:register' %}">Register</a>
+        {%  endif %}
     </nav>
 
     <main>

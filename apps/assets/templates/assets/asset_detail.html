@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Asset Details</title>
-</head>
-<body>
+
+
     {% extends "base.html" %}
 
     {% block title %}{{ asset.asset_name }}{% endblock %}
@@ -18,7 +13,7 @@
         <p>Warranty Expires: {{ asset.end_of_warranty|default:"N/A" }}</p>
         <a href="{% url 'assets:asset_list' %}">Back to list</a>
         <button onclick="window.location.href='{% url 'assets:asset_update' asset.id %}'">Edit</button>
-        <button onclick="window.location.href='{% url 'assets:asset_delete' asset.id %}'">Delete</button>
+        {% if user.is_staff %}
+            <button onclick="window.location.href='{% url 'assets:asset_delete' asset.id %}'">Delete</button>
+        {% endif %}
     {% endblock %}
-</body>
-</html>

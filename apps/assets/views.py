@@ -3,35 +3,35 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from apps.assets.models import Asset
 
-
 # Create your views here.
-class AssetListView(ListView):
+class AssetListView(LoginRequiredMixin, ListView):
     model = Asset
     template_name = "assets/asset_list.html"
     context_object_name = "assets"
     paginate_by = 10
 
-class AssetDetailView(DetailView):
+class AssetDetailView(LoginRequiredMixin, DetailView):
     model = Asset
     template_name = "assets/asset_detail.html"
     context_object_name = "asset"
 
-class AssetCreateView(CreateView):
+class AssetCreateView(LoginRequiredMixin, CreateView):
     model = Asset
     template_name = "assets/asset_create.html"
     fields = "__all__"
     success_url = reverse_lazy("assets:asset_list")
 
-class AssetUpdateView(UpdateView):
+class AssetUpdateView(LoginRequiredMixin, UpdateView):
     model = Asset
     template_name = "assets/asset_update.html"
     context_object_name = "asset"
     fields = "__all__"
     success_url = reverse_lazy("assets:asset_list")
 
-class AssetDeleteView(DeleteView):
+class AssetDeleteView(LoginRequiredMixin, UserPassesTestMixin , DeleteView):
     model = Asset
     template_name = "assets/asset_delete.html"
     success_url = reverse_lazy("assets:asset_list")
@@ -42,3 +42,6 @@ class AssetDeleteView(DeleteView):
         except ProtectedError:
             messages.error(self.request, "You cannot delete this asset, as it is currently assigned to a user")
             return redirect("assets:asset_detail", pk=self.object.pk)
+
+    def test_func(self):
+        return self.request.user.is_staff

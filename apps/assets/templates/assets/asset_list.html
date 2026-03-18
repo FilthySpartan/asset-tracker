@@ -1,17 +1,34 @@
+{% extends "base.html" %}
 
-    {% extends "base.html" %}
+{% block title %}Assets{% endblock %}
 
-    {% block title %}Assets{% endblock %}
-
-    {% block content %}
-    <h1>Assets</h1>
-
-    {% for asset in assets %}
-        <p>
-            <a href="{% url 'assets:asset_detail' asset.id %}">
-            {{ asset.asset_name }} - {{ asset.get_type_display }} - {{ asset.get_status_display }}
-            </a>
-        </p>
-    {% endfor %}
-
-    {% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Assets</h1>
+        <a href="{% url 'assets:asset_create' %}" class="btn btn-primary">Add Asset</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in assets %}
+                <tr>
+                    <td><a href="{% url 'assets:asset_detail' asset.id %}">{{ asset.asset_name }}</a></td>
+                    <td>{{ asset.get_type_display }}</td>
+                    <td>{{ asset.get_status_display }}</td>
+                    <td>£{{ asset.cost }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No assets found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

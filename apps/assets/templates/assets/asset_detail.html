@@ -5,15 +5,21 @@
     {% block title %}{{ asset.asset_name }}{% endblock %}
 
     {% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>{{ asset.asset_name }}</h1>
-        <p>Type: {{ asset.get_type_display }}</p>
-        <p>Status: {{ asset.get_status_display }}</p>
-        <p>Cost: £{{ asset.cost }}</p>
-        <p>Last PAT Test: {{ asset.last_pat_test|default:"N/A" }}</p>
-        <p>Warranty Expires: {{ asset.end_of_warranty|default:"N/A" }}</p>
-        <a href="{% url 'assets:asset_list' %}">Back to list</a>
-        <button onclick="window.location.href='{% url 'assets:asset_update' asset.id %}'">Edit</button>
-        {% if user.is_staff %}
-            <button onclick="window.location.href='{% url 'assets:asset_delete' asset.id %}'">Delete</button>
-        {% endif %}
+    </div>
+        <div class="card bg-light" style="width: 18rem;">
+            <p><strong>Type:</strong> {{ asset.get_type_display }}</p>
+            <p><strong>Status:</strong>{{ asset.get_status_display }}</p>
+            <p><strong>Cost:</strong> £{{ asset.cost }}</p>
+            <p><strong>Last PAT Test:</strong> {{ asset.last_pat_test|default:"N/A" }}</p>
+            <p><strong>Warranty Expires:</strong> {{ asset.end_of_warranty|default:"N/A" }}</p>
+        </div>
+        <div style="padding: 10px 8px 10px 10px;">
+            <a href="{% url 'assets:asset_list' %}">Back to list</a>
+            <button onclick="window.location.href='{% url 'assets:asset_update' asset.id %}'">Edit</button>
+            {% if user.is_staff %}
+                <button onclick="window.location.href='{% url 'assets:asset_delete' asset.id %}'">Delete</button>
+            {% endif %}
+        </div>
     {% endblock %}

@@ -1,19 +1,48 @@
+{% extends "base.html" %}
 
+{% block title %}{{ asset_assignment }}{% endblock %}
 
-    {% extends "base.html" %}
-
-    {% block title %}{{ asset_assignment }}{% endblock %}
-
-    {% block content %}
-        <h1>{{ asset_assignment }}</h1>
-        <p>Asset: {{ asset_assignment.asset.asset_name }}</p>
-        <p>Assigned user: {{ asset_assignment.user.get_full_name }}</p>
-        <p>Status: {{ asset_assignment.asset.get_status_display }}</p>
-        <p>Date Given: {{ asset_assignment.date_given }}</p>
-        <p>Date Retrieved: {{ asset_assignment.date_retrieved }}</p>
-        <a href="{% url 'assets:asset_assignment_list' %}">Back to list</a>
-        <button onclick="window.location.href='{% url 'assets:asset_assignment_update' asset_assignment.id %}'">Edit</button>
-        {% if user.is_staff %}
-            <button onclick="window.location.href='{% url 'assets:asset_assignment_delete' asset_assignment.id %}'">Delete</button>
-        {% endif %}
-    {% endblock %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Assignment Details</h1>
+                <div>
+                    <a href="{% url 'assets:asset_assignment_list' %}" class="btn btn-secondary">Back to list</a>
+                    <a href="{% url 'assets:asset_assignment_update' asset_assignment.id %}" class="btn btn-primary">Edit</a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'assets:asset_assignment_delete' asset_assignment.id %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <th style="width: 200px;">Asset</th>
+                            <td><a href="{% url 'assets:asset_detail' asset_assignment.asset.id %}">{{ asset_assignment.asset.asset_name }}</a></td>
+                        </tr>
+                        <tr>
+                            <th>Assigned To</th>
+                            <td>{{ asset_assignment.user.get_full_name|default:asset_assignment.user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date Given</th>
+                            <td>{{ asset_assignment.date_given }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date Retrieved</th>
+                            <td>
+                                {% if asset_assignment.date_retrieved %}
+                                    {{ asset_assignment.date_retrieved }}
+                                {% else %}
+                                    <span class="badge bg-success">Currently Assigned</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

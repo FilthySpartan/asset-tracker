@@ -4,13 +4,28 @@
     {% block title %}Assignments{% endblock %}
 
     {% block content %}
-    <h1>Assignments</h1>
-    {% for assignment in asset_assignments %}
-        <p>
-            <a href="{% url 'assets:asset_assignment_detail' assignment.id %}">
-            {{ assignment }}
-            </a>
-        </p>
-    {% endfor %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Assignments</h1>
+            <a href="{% url 'assets:asset_assignment_create' %}" class="btn btn-primary">Assign Asset</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Current Holder</th>
+                    <th>Date Given</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in asset_assignments %}
+                    <tr>
+                        <td><a href="{% url 'assets:asset_assignment_detail' assignment.id %}">{{ assignment.asset.asset_name }}</a></td>
+                        <td>{{ assignment.user.get_full_name|default:assignment.user.username }}</td>
+                        <td>{{ assignment.date_given|date:'d/m/Y' }}</td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
 
     {% endblock %}

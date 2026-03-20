@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from apps.assets.models import Asset, AssetAssignment
+from .forms import AssetForm, AssetAssignmentForm
 
 # Create your views here.
 class AssetListView(LoginRequiredMixin, ListView):
@@ -21,14 +22,14 @@ class AssetDetailView(LoginRequiredMixin, DetailView):
 class AssetCreateView(LoginRequiredMixin, CreateView):
     model = Asset
     template_name = "assets/asset_create.html"
-    fields = ["asset_name", "type", "last_pat_test", "end_of_warranty", "cost", "status"]
+    form_class = AssetForm
     success_url = reverse_lazy("assets:asset_list")
 
 class AssetUpdateView(LoginRequiredMixin, UpdateView):
     model = Asset
     template_name = "assets/asset_update.html"
     context_object_name = "asset"
-    fields = ["asset_name", "type", "last_pat_test", "end_of_warranty", "cost", "status"]
+    form_class = AssetForm
     success_url = reverse_lazy("assets:asset_list")
 
 class AssetDeleteView(LoginRequiredMixin, UserPassesTestMixin , DeleteView):
@@ -60,14 +61,14 @@ class AssetAssignmentDetailView(LoginRequiredMixin, DetailView):
 class AssetAssignmentCreateView(LoginRequiredMixin, CreateView):
     model = AssetAssignment
     template_name = "assets/asset_assignment_create.html"
-    fields = ["user", "asset", "date_given"]
+    form_class = AssetAssignmentForm
     success_url = reverse_lazy("assets:asset_assignment_list")
 
 class AssetAssignmentUpdateView(LoginRequiredMixin, UpdateView):
     model = AssetAssignment
     template_name = "assets/asset_assignment_update.html"
     context_object_name = "asset_assignment"
-    fields = ["user", "asset", "date_given"]
+    form_class = AssetAssignmentForm
     success_url = reverse_lazy("assets:asset_assignment_list")
 
 class AssetAssignmentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

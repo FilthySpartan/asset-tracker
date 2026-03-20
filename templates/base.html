@@ -17,6 +17,9 @@
             font-weight: 500;
             margin-bottom: 0.25rem;
         }
+        button[type="submit"] {
+
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -30,7 +33,7 @@
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
                     <span class="nav-link text-light">{{ user.username }}</span>
-                    <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+                    <a class="nav-link" href="{% url 'accounts:login' %}">Logout</a>
                 {% else %}
                     <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
                     <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>

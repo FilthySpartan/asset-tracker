@@ -6,7 +6,7 @@
     {% block content %}
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>Assignments</h1>
-            <a href="{% url 'assets:asset_create' %}" class="btn btn-primary">Assign Asset</a>
+            <a href="{% url 'assets:asset_assignment_create' %}" class="btn btn-primary">Assign Asset</a>
         </div>
         <table class="table table-striped">
             <thead>
@@ -19,9 +19,9 @@
             <tbody>
                 {% for assignment in asset_assignments %}
                     <tr>
-                        <td>{{ assignment.asset.asset_name }}</td>
-                        <td>{{ assignment.user.get_full_name }}</td>
-                        <td>{{ assignment.date_given }}</td>
+                        <td><a href="{% url 'assets:asset_assignment_detail' assignment.id %}">{{ assignment.asset.asset_name }}</a></td>
+                        <td>{{ assignment.user.get_full_name|default:assignment.user.username }}</td>
+                        <td>{{ assignment.date_given|date:'d/m/Y' }}</td>
                     </tr>
             {% endfor %}
             </tbody>

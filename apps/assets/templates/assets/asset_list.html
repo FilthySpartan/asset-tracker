@@ -19,7 +19,7 @@
         <tbody>
             {% for asset in assets %}
                 <tr>
-                    <td><a href="{% url 'assets:asset_detail' asset.id %}">{{ asset.asset_name }}</a></td>
+                    <td><a href="{% url 'assets:asset_detail' asset.id %}">{{ asset.display_name }}</a></td>
                     <td>{{ asset.get_type_display }}</td>
                     <td>{{ asset.get_status_display }}</td>
                     <td>£{{ asset.cost }}</td>

@@ -21,14 +21,14 @@ class AssetDetailView(LoginRequiredMixin, DetailView):
 class AssetCreateView(LoginRequiredMixin, CreateView):
     model = Asset
     template_name = "assets/asset_create.html"
-    fields = "__all__"
+    fields = ["asset_name", "type", "last_pat_test", "end_of_warranty", "cost", "status"]
     success_url = reverse_lazy("assets:asset_list")
 
 class AssetUpdateView(LoginRequiredMixin, UpdateView):
     model = Asset
     template_name = "assets/asset_update.html"
     context_object_name = "asset"
-    fields = "__all__"
+    fields = ["asset_name", "type", "last_pat_test", "end_of_warranty", "cost", "status"]
     success_url = reverse_lazy("assets:asset_list")
 
 class AssetDeleteView(LoginRequiredMixin, UserPassesTestMixin , DeleteView):

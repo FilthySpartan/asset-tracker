@@ -145,7 +145,7 @@ class AssetAssignmentListView(LoginRequiredMixin, ListView):
                 models.Q(asset__asset_id__icontains=search)
             )
 
-        allowed_sorts = ['asset__asset_name', 'user__last_name', 'date_given', 'date_retrieved']
+        allowed_sorts = ['asset__asset_name', 'user__last_name', 'date_given']
         sort = self.request.GET.get('sort', 'date_given')
         direction = self.request.GET.get('dir', 'desc')
         if sort not in allowed_sorts:

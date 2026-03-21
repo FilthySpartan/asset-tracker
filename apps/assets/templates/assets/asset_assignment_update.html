@@ -1,33 +1,5 @@
 {% extends "base.html" %}
-
-{% block title %}Edit Assignment{% endblock %}
-
-{# We don't use form.as_div here so the custom alert could be added without duplicating the validation message #}
+{% block title %}{{ form_title }}{% endblock %}
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <h1>Reassign Asset</h1>
-            <form method="post">
-                {% if form.non_field_errors %}
-                    {% for error in form.non_field_errors %}
-                        <div class="alert alert-danger">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            {% for error in field.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{% url 'assets:asset_assignment_list' %}">Cancel</a>
-            </form>
-        </div>
-    </div>
+    {% include "includes/form.html" %}
 {% endblock %}

@@ -16,6 +16,10 @@ Database functionality also keeps track of previously assigned users to assets f
 | Admin   | smorgan  | testpass123  |
 | Regular | jcooper  | testpass123  |
 
+New users can be created via the register page.
+In order to create a new Admin level user the follow code must be entered into the admin code field:
+[ vuepoint-admin-2026 ]
+
 Admin users can create, read, update, and delete records. Regular users can create, read, and update only.
 
 ## Features

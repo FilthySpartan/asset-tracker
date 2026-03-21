@@ -10,23 +10,27 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Cost</th>
+                <th style="width: 20%"><a href="?sort=asset_name&dir={% if current_sort == 'asset_name' and current_dir == 'asc' %}desc{% else %}asc{% endif %}">Name {% if current_sort == 'asset_name' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 25%"><a href="?sort=asset_id&dir={% if current_sort == 'asset_id' and current_dir == 'asc' %}desc{% else %}asc{% endif %}">Asset ID {% if current_sort == 'asset_id' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 12%"><a href="?sort=type&dir={% if current_sort == 'type' and current_dir == 'asc' %}desc{% else %}asc{% endif %}">Type {% if current_sort == 'type' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 12%"><a href="?sort=status&dir={% if current_sort == 'status' and current_dir == 'asc' %}desc{% else %}asc{% endif %}">Status {% if current_sort == 'status' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 13%"><a href="?sort=cost&dir={% if current_sort == 'cost' and current_dir == 'asc' %}desc{% else %}asc{% endif %}">Cost {% if current_sort == 'cost' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 18%"><a href="?sort=last_pat_test&dir={% if current_sort == 'last_pat_test' and current_dir == 'asc' %}desc{% else %}asc{% endif %}">PAT Tested {% if current_sort == 'last_pat_test' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
             </tr>
         </thead>
         <tbody>
             {% for asset in assets %}
                 <tr>
                     <td><a href="{% url 'assets:asset_detail' asset.id %}">{{ asset.display_name }}</a></td>
+                    <td>{{ asset.asset_id }}</td>
                     <td>{{ asset.get_type_display }}</td>
                     <td>{{ asset.get_status_display }}</td>
                     <td>£{{ asset.cost }}</td>
+                    <td>{{ asset.last_pat_test|date:'d/m/Y'  }}</td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4">No assets found.</td>
+                    <td colspan="5">No assets found.</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -36,17 +40,17 @@
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&sort={{ current_sort }}&dir={{ current_dir }}">Previous</a>
                 </li>
             {% endif %}
             {% for num in page_obj.paginator.page_range %}
                 <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    <a class="page-link" href="?page={{ num }}&sort={{ current_sort }}&dir={{ current_dir }}">{{ num }}</a>
                 </li>
             {% endfor %}
             {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&sort={{ current_sort }}&dir={{ current_dir }}">Next</a>
                 </li>
             {% endif %}
         </ul>

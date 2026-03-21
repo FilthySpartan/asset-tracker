@@ -1,10 +1,10 @@
 
     {% extends "base.html" %}
 
-    {% block title %}Delete Asset{% endblock %}
+    {% block title %}Delete Assignment{% endblock %}
 
     {% block content %}
-        <h1>Delete Asset</h1>
+        <h1>Delete Assignment</h1>
         <p>Are you sure you want to delete "{{ asset_assignment }}"?</p>
         <form method="post">
             {% csrf_token %}

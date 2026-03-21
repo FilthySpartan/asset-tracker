@@ -20,7 +20,11 @@
                     <table class="table table-borderless mb-0">
                         <tr>
                             <th style="width: 200px;">Asset</th>
-                            <td><a href="{% url 'assets:asset_detail' asset_assignment.asset.id %}">{{ asset_assignment.asset.asset_name }}</a></td>
+                            <td><a href="{% url 'assets:asset_detail' asset_assignment.asset.id %}">{{ asset_assignment.asset.asset_id }} - {{ asset_assignment.asset.display_name }}</a></td>
+                        </tr>
+                        <tr>
+                            <th style="width: 200px;">Asset</th>
+                            <td><a href="{% url 'assets:asset_detail' asset_assignment.asset.id %}">{{ asset_assignment.asset.display_name }}</a></td>
                         </tr>
                         <tr>
                             <th>Assigned To</th>

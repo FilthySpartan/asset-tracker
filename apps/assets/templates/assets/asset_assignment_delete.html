@@ -1,15 +1,5 @@
-
-    {% extends "base.html" %}
-
-    {% block title %}Delete Assignment{% endblock %}
-
-    {% block content %}
-        <h1>Delete Assignment</h1>
-        <p>Are you sure you want to delete "{{ asset_assignment }}"?</p>
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Yes, delete</button>
-        <a href="{% url 'assets:asset_assignment_detail' asset_assignment.id %}">Cancel</a>
-        </form>
-
-    {% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ delete_title }}{% endblock %}
+{% block content %}
+    {% include "includes/delete_confirm.html" %}
+{% endblock %}

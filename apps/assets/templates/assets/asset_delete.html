@@ -1,19 +1,5 @@
-
-    {% extends "base.html" %}
-
-    {% block title %}Delete Asset{% endblock %}
-
-    {% block content %}
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h1>Delete Asset</h1>
-                <p>Are you sure you want to delete "{{ asset.display_name }}"?</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Yes, delete</button>
-                    <a href="{% url 'assets:asset_detail' asset.id %}">Cancel</a>
-                </form>
-
-            </div>
-        </div>
-    {% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ delete_title }}{% endblock %}
+{% block content %}
+    {% include "includes/delete_confirm.html" %}
+{% endblock %}

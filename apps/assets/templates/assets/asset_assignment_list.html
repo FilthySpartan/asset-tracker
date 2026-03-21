@@ -25,7 +25,6 @@
                 <th style="width: 45%"><a href="?sort=asset__asset_name&dir={% if current_sort == 'asset__asset_name' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Asset {% if current_sort == 'asset__asset_name' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
                 <th style="width: 25%"><a href="?sort=user__last_name&dir={% if current_sort == 'user__last_name' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Assigned To {% if current_sort == 'user__last_name' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
                 <th style="width: 15%"><a href="?sort=date_given&dir={% if current_sort == 'date_given' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Date Given {% if current_sort == 'date_given' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
-                <th style="width: 15%"><a href="?sort=date_retrieved&dir={% if current_sort == 'date_retrieved' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Date Retrieved {% if current_sort == 'date_retrieved' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
             </tr>
         </thead>
         <tbody>
@@ -34,8 +33,7 @@
                     <td><a href="{% url 'assets:asset_assignment_detail' assignment.id %}">{{ assignment.asset.display_name }} - {{ assignment.asset.asset_id }}</a></td>
                     <td>{{ assignment.user.get_full_name|default:assignment.user.username }}</td>
                     <td>{{ assignment.date_given|date:'d/m/Y' }}</td>
-                    <td>{{ assignment.date_retrieved|date:'d/m/Y' }}</td>
-                </tr>
+                 </tr>
         {% endfor %}
         </tbody>
     </table>

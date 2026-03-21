@@ -7,6 +7,11 @@ class AssetForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = ["asset_name", "type", "last_pat_test", "end_of_warranty", "cost", "status"]
+        widgets = {
+            'last_pat_test': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),
+            'end_of_warranty': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),
+            'cost': forms.NumberInput(attrs={'placeholder': '£0.00', 'step': '0.01'})
+        }
 
     # validate the cost field
     def clean_cost(self):
@@ -28,6 +33,7 @@ class AssetAssignmentForm(forms.ModelForm):
     class Meta:
         model = AssetAssignment
         fields = ["user", "asset", "date_given"]
+        widgets = {'date_given': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d')}
 
     # check prevents the user entering a date in the future
     def clean_date_given(self):

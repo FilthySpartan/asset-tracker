@@ -8,7 +8,8 @@
         <p>Are you sure you want to delete "{{ asset_assignment }}"?</p>
         <form method="post">
             {% csrf_token %}
-            <button type="submit">Yes, delete</button>
-        </form>
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
         <a href="{% url 'assets:asset_assignment_detail' asset_assignment.id %}">Cancel</a>
+        </form>
+
     {% endblock %}

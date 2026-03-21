@@ -1,31 +1,63 @@
 
-    {% extends "base.html" %}
+{% extends "base.html" %}
 
-    {% block title %}Assignments{% endblock %}
+{% block title %}Assignments{% endblock %}
 
-    {% block content %}
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1>Assignments</h1>
-            <a href="{% url 'assets:asset_assignment_create' %}" class="btn btn-primary">Assign Asset</a>
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Assignments</h1>
+        <a href="{% url 'assets:asset_assignment_create' %}" class="btn btn-primary">Assign Asset</a>
+    </div>
+    <form method="get" class="mb-3">
+        <div class="row justify-content-start">
+            <div class="col-md-4 d-flex gap-2">
+                <input type="text" name="q" class="form-control form-control-sm" placeholder="Search..." value="{{ search_query }}">
+                <button type="submit" class="btn btn-primary btn-sm py-0">Search</button>
+                {% if search_query %}
+                    <a href="{% url 'assets:asset_list' %}" class="btn btn-outline-danger btn-sm py-0 d-flex align-items-center">Clear</a>
+                {% endif %}
+            </div>
         </div>
-        <table class="table table-striped">
-            <thead>
+    </form>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 45%"><a href="?sort=asset__asset_name&dir={% if current_sort == 'asset__asset_name' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Asset {% if current_sort == 'asset__asset_name' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 25%"><a href="?sort=user__last_name&dir={% if current_sort == 'user__last_name' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Assigned To {% if current_sort == 'user__last_name' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 15%"><a href="?sort=date_given&dir={% if current_sort == 'date_given' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Date Given {% if current_sort == 'date_given' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+                <th style="width: 15%"><a href="?sort=date_retrieved&dir={% if current_sort == 'date_retrieved' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Date Retrieved {% if current_sort == 'date_retrieved' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in asset_assignments %}
                 <tr>
-                    <th>Asset</th>
-                    <th>Current Holder</th>
-                    <th>Date Given</th>
+                    <td><a href="{% url 'assets:asset_assignment_detail' assignment.id %}">{{ assignment.asset.display_name }} - {{ assignment.asset.asset_id }}</a></td>
+                    <td>{{ assignment.user.get_full_name|default:assignment.user.username }}</td>
+                    <td>{{ assignment.date_given|date:'d/m/Y' }}</td>
+                    <td>{{ assignment.date_retrieved|date:'d/m/Y' }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for assignment in asset_assignments %}
-                    <tr>
-                        <td><a href="{% url 'assets:asset_assignment_detail' assignment.id %}">{{ assignment.asset.asset_name }}</a></td>
-                        <td>{{ assignment.user.get_full_name|default:assignment.user.username }}</td>
-                        <td>{{ assignment.date_given|date:'d/m/Y' }}</td>
-                    </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-
-    {% endblock %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if is_paginated %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&sort={{ current_sort }}&dir={{ current_dir }}&q={{ search_query }}">Previous</a>
+                    </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}&sort={{ current_sort }}&dir={{ current_dir }}&q={{ search_query }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&sort={{ current_sort }}&dir={{ current_dir }}&q={{ search_query }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

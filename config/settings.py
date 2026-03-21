@@ -119,7 +119,7 @@ DATE_FORMAT = 'd/m/Y'
 
 USE_L10N = False
 
-DATE_INPUT_FORMATS = ['%d/%m/%Y']
+DATE_INPUT_FORMATS = ['%d/%m/%Y', '%Y-%m-%d']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/

@@ -19,6 +19,10 @@
                 <div class="card-body">
                     <table class="table table-borderless mb-0">
                         <tr>
+                            <th style="width: 200px;">Asset ID</th>
+                            <td>{{ asset.asset_id }}</td>
+                        </tr>
+                        <tr>
                             <th style="width: 200px;">Type</th>
                             <td>{{ asset.get_type_display }}</td>
                         </tr>
@@ -36,13 +40,48 @@
                         </tr>
                         <tr>
                             <th>Last PAT Test</th>
-                            <td>{{ asset.last_pat_test|default:"N/A" }}</td>
+                            <td>{{ asset.last_pat_test|date:"d/m/Y" }}</td>
                         </tr>
                         <tr>
                             <th>Warranty Expires</th>
-                            <td>{{ asset.end_of_warranty|default:"N/A" }}</td>
+                            <td>{{ asset.end_of_warranty|date:"d/m/Y" }}</td>
                         </tr>
                     </table>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Assignment History</h5>
+                </div>
+                <div class="card-body">
+                    {% if assignments %}
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Assigned To</th>
+                                    <th>Date Given</th>
+                                    <th>Date Retrieved</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assignment in assignments %}
+                                    <tr>
+                                        <td>{{ assignment.user.get_full_name|default:assignment.user.username }}</td>
+                                        <td>{{ assignment.date_given|date:"d/m/Y" }}</td>
+                                        <td>
+                                            {% if assignment.date_retrieved %}
+                                                {{ assignment.date_retrieved|date:"d/m/Y" }}
+                                            {% else %}
+                                                <span class="badge bg-success">Current</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted mb-0">This asset has never been assigned.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

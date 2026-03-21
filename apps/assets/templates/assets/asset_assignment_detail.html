@@ -32,13 +32,13 @@
                         </tr>
                         <tr>
                             <th>Date Given</th>
-                            <td>{{ asset_assignment.date_given }}</td>
+                            <td>{{ asset_assignment.date_given|date:"d/m/Y" }}</td>
                         </tr>
                         <tr>
                             <th>Date Retrieved</th>
                             <td>
                                 {% if asset_assignment.date_retrieved %}
-                                    {{ asset_assignment.date_retrieved }}
+                                    {{ asset_assignment.date_retrieved|date:"d/m/Y" }}
                                 {% else %}
                                     <span class="badge bg-success">Currently Assigned</span>
                                 {% endif %}

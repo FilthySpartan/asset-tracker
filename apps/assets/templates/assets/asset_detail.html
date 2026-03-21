@@ -40,11 +40,11 @@
                         </tr>
                         <tr>
                             <th>Last PAT Test</th>
-                            <td>{{ asset.last_pat_test|default:"N/A" }}</td>
+                            <td>{{ asset.last_pat_test|date:"d/m/Y" }}</td>
                         </tr>
                         <tr>
                             <th>Warranty Expires</th>
-                            <td>{{ asset.end_of_warranty|default:"N/A" }}</td>
+                            <td>{{ asset.end_of_warranty|date:"d/m/Y" }}</td>
                         </tr>
                     </table>
                 </div>

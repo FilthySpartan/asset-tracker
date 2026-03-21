@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from apps.assets.models import Asset, AssetAssignment
 from .forms import AssetForm, AssetUpdateForm, AssetAssignmentForm
@@ -56,11 +57,12 @@ class AssetDetailView(LoginRequiredMixin, DetailView):
         ).order_by('-date_given')
         return context
 
-class AssetCreateView(LoginRequiredMixin, CreateView):
+class AssetCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Asset
     template_name = "assets/asset_create.html"
     form_class = AssetForm
     success_url = reverse_lazy("assets:asset_list")
+    success_message = "Asset created successfully."
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -82,12 +84,13 @@ class AssetCreateView(LoginRequiredMixin, CreateView):
         context['cancel_url'] = reverse_lazy('assets:asset_list')
         return context
 
-class AssetUpdateView(LoginRequiredMixin, UpdateView):
+class AssetUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Asset
     template_name = "assets/asset_update.html"
     context_object_name = "asset"
     form_class = AssetUpdateForm
     success_url = reverse_lazy("assets:asset_list")
+    success_message = "Asset updated successfully."
 
     def form_valid(self, form):
         logger.info(f"Asset '{self.object.asset_id}' updated by {self.request.user}")
@@ -99,7 +102,7 @@ class AssetUpdateView(LoginRequiredMixin, UpdateView):
         context['cancel_url'] = reverse_lazy('assets:asset_list')
         return context
 
-class AssetDeleteView(LoginRequiredMixin, UserPassesTestMixin , DeleteView):
+class AssetDeleteView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin , DeleteView):
     model = Asset
     template_name = "assets/asset_delete.html"
     success_url = reverse_lazy("assets:asset_list")
@@ -107,6 +110,7 @@ class AssetDeleteView(LoginRequiredMixin, UserPassesTestMixin , DeleteView):
     def form_valid(self, form):
         try:
             logger.info(f"Asset '{self.object.display_name()}' ({self.object.asset_id}) deleted by {self.request.user}")
+            messages.success(self.request, "Asset deleted successfully.")
             return super().form_valid(form)
         except ProtectedError:
             logger.warning(f"Failed to delete asset '{self.object.asset_id}' - protected by active assignments. Attempted by {self.request.user}")
@@ -166,11 +170,12 @@ class AssetAssignmentDetailView(LoginRequiredMixin, DetailView):
     template_name = "assets/asset_assignment_detail.html"
     context_object_name = "asset_assignment"
 
-class AssetAssignmentCreateView(LoginRequiredMixin, CreateView):
+class AssetAssignmentCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = AssetAssignment
     template_name = "assets/asset_assignment_create.html"
     form_class = AssetAssignmentForm
     success_url = reverse_lazy("assets:asset_assignment_list")
+    success_message = "Assignment created successfully."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -183,7 +188,7 @@ class AssetAssignmentCreateView(LoginRequiredMixin, CreateView):
         logger.info(f"Assignment created: '{self.object.asset.asset_id}' assigned to {self.object.user.get_full_name()} by {self.request.user}")
         return response
 
-class AssetAssignmentUpdateView(LoginRequiredMixin, UpdateView):
+class AssetAssignmentUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = AssetAssignment
     template_name = "assets/asset_assignment_update.html"
     context_object_name = "asset_assignment"
@@ -205,9 +210,11 @@ class AssetAssignmentUpdateView(LoginRequiredMixin, UpdateView):
                 date_given=form.cleaned_data['date_given'],
                 date_retrieved=form.cleaned_data.get('date_retrieved')
             )
+            messages.success(self.request, "Asset reassigned successfully.")
             logger.info(f"Assignment created: '{form.cleaned_data['asset'].asset_id}' assigned to {form.cleaned_data['user'].get_full_name()} by {self.request.user}")
             return redirect(self.success_url)
         else:
+            messages.success(self.request,"Assignment updated successfully.")
             logger.info(f"Assignment updated for '{self.object.asset.asset_id}' by {self.request.user}")
             return super().form_valid(form)
 
@@ -217,7 +224,7 @@ class AssetAssignmentUpdateView(LoginRequiredMixin, UpdateView):
         context['cancel_url'] = reverse_lazy('assets:asset_assignment_list')
         return context
 
-class AssetAssignmentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class AssetAssignmentDeleteView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, DeleteView):
     model = AssetAssignment
     template_name = "assets/asset_assignment_delete.html"
     success_url = reverse_lazy("assets:asset_assignment_list")
@@ -234,8 +241,8 @@ class AssetAssignmentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteV
         return context
 
     def form_valid(self, form):
-        logger.info(
-            f"Assignment deleted: '{self.object.asset.asset_id}' - {self.object.user.get_full_name()} by {self.request.user}")
+        logger.info(f"Assignment deleted: '{self.object.asset.asset_id}' - {self.object.user.get_full_name()} by {self.request.user}")
+        messages.success(self.request, "Asset deleted successfully.")
         return super().form_valid(form)
 
     def handle_no_permission(self):

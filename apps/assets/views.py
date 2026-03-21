@@ -1,3 +1,4 @@
+from django.db import models
 from django.db.models import ProtectedError
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -16,6 +17,16 @@ class AssetListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        search = self.request.GET.get('q', '')
+        if search:
+            queryset = queryset.filter(
+                models.Q(asset_name__icontains=search) |
+                models.Q(asset_id__icontains=search) |
+                models.Q(type__icontains=search) |
+                models.Q(status__icontains=search)
+            )
+
         allowed_sorts = ['asset_id', 'asset_name', 'type', 'status', 'cost', 'last_pat_test']
         sort = self.request.GET.get('sort', 'asset_id')
         direction = self.request.GET.get('dir', 'asc')
@@ -29,6 +40,7 @@ class AssetListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['current_sort'] = self.request.GET.get('sort', 'asset_id')
         context['current_dir'] = self.request.GET.get('dir', 'asc')
+        context['search_query'] = self.request.GET.get('q', '')
         return context
 
 class AssetDetailView(LoginRequiredMixin, DetailView):
@@ -90,7 +102,17 @@ class AssetAssignmentListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = AssetAssignment.objects.filter(date_retrieved__isnull=True)
+
+        search = self.request.GET.get('q', '')
+        if search:
+            queryset = queryset.filter(
+                models.Q(asset__asset_name__icontains=search) |
+                models.Q(user__first_name__icontains=search) |
+                models.Q(user__last_name__icontains=search) |
+                models.Q(asset__asset_id__icontains=search)
+            )
+
         allowed_sorts = ['asset__asset_name', 'user__last_name', 'date_given', 'date_retrieved']
         sort = self.request.GET.get('sort', 'date_given')
         direction = self.request.GET.get('dir', 'desc')
@@ -104,6 +126,7 @@ class AssetAssignmentListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['current_sort'] = self.request.GET.get('sort', 'date_given')
         context['current_dir'] = self.request.GET.get('dir', 'desc')
+        context['search_query'] = self.request.GET.get('q', '')
         return context
 
 class AssetAssignmentDetailView(LoginRequiredMixin, DetailView):

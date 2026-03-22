@@ -24,9 +24,7 @@ class AssetListView(LoginRequiredMixin, ListView):
         if search:
             queryset = queryset.filter(
                 models.Q(asset_name__icontains=search) |
-                models.Q(asset_id__icontains=search) |
-                models.Q(type__icontains=search) |
-                models.Q(status__icontains=search)
+                models.Q(asset_id__icontains=search)
             )
 
         allowed_sorts = ['asset_id', 'asset_name', 'type', 'status', 'cost', 'last_pat_test']

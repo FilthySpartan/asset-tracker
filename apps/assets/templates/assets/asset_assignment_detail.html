@@ -19,12 +19,12 @@
                 <div class="card-body">
                     <table class="table table-borderless mb-0">
                         <tr>
-                            <th style="width: 200px;">Asset</th>
-                            <td><a href="{% url 'assets:asset_detail' asset_assignment.asset.id %}">{{ asset_assignment.asset.asset_id }} - {{ asset_assignment.asset.display_name }}</a></td>
+                            <th style="width: 200px;">Asset ID</th>
+                            <td><a href="{% url 'assets:asset_detail' asset_assignment.asset.id %}">{{ asset_assignment.asset.asset_id }}</a></td>
                         </tr>
                         <tr>
-                            <th style="width: 200px;">Asset</th>
-                            <td><a href="{% url 'assets:asset_detail' asset_assignment.asset.id %}">{{ asset_assignment.asset.display_name }}</a></td>
+                            <th style="width: 200px;">Asset Name</th>
+                            <td>{{ asset_assignment.asset.display_name }}</td>
                         </tr>
                         <tr>
                             <th>Assigned To</th>

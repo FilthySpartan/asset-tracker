@@ -20,6 +20,7 @@
     </form>
     <table class="table table-striped">
         <thead>
+           {#  table sorting is enabled  #}
             <tr>
                 <th style="width: 20%"><a href="?sort=asset_name&dir={% if current_sort == 'asset_name' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Name {% if current_sort == 'asset_name' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
                 <th style="width: 25%"><a href="?sort=asset_id&dir={% if current_sort == 'asset_id' and current_dir == 'asc' %}desc{% else %}asc{% endif %}&q={{ search_query }}">Asset ID {% if current_sort == 'asset_id' %}{% if current_dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
@@ -47,6 +48,7 @@
         </tbody>
     </table>
     {% if is_paginated %}
+    {#   table pagination - maintains sort and search   #}
     <nav>
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}

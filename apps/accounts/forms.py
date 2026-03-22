@@ -18,25 +18,21 @@ class CustomRegistrationForm(UserCreationForm):
         model = User
         fields = ["username", "first_name", "last_name", "password1", "password2", "admin_code"]
 
-    def clean_first_name(self):
-        name = self.cleaned_data.get("first_name")
+    def _validate_name(self, name, field_label):
+        """Shared validation logic for name fields."""
         if not name.strip():
-            raise forms.ValidationError("First name is required.")
+            raise forms.ValidationError(f"{field_label} is required.")
         if re.search(r'[0-9]', name):
-            raise forms.ValidationError("First name cannot contain numbers.")
+            raise forms.ValidationError(f"{field_label} cannot contain numbers.")
         if re.search(r'[^a-zA-Z\s\-\']', name):
-            raise forms.ValidationError("First name can only contain letters, spaces, hyphens, and apostrophes.")
+            raise forms.ValidationError(f"{field_label} can only contain letters, spaces, hyphens, and apostrophes.")
         return name.strip()
 
+    def clean_first_name(self):
+        return self._validate_name(self.cleaned_data.get("first_name"), "First name")
+
     def clean_last_name(self):
-        name = self.cleaned_data.get("last_name")
-        if not name.strip():
-            raise forms.ValidationError("Last name is required.")
-        if re.search(r'[0-9]', name):
-            raise forms.ValidationError("Last name cannot contain numbers.")
-        if re.search(r'[^a-zA-Z\s\-\']', name):
-            raise forms.ValidationError("Last name can only contain letters, spaces, hyphens, and apostrophes.")
-        return name.strip()
+        return self._validate_name(self.cleaned_data.get("last_name"), "Last name")
 
     def clean_admin_code(self):
         code = self.cleaned_data.get("admin_code")

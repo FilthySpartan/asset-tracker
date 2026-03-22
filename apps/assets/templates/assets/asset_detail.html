@@ -28,6 +28,7 @@
                         </tr>
                         <tr>
                             <th>Status</th>
+                            {#   status badge style changes based on the assets status    #}
                             <td>
                                 <span class="badge {% if asset.status == 'A' %}bg-success{% elif asset.status == 'I' %}bg-secondary{% elif asset.status == 'TD' %}bg-danger{% elif asset.status == 'O' %}bg-warning text-dark{% else %}bg-info{% endif %}">
                                     {{ asset.get_status_display }}

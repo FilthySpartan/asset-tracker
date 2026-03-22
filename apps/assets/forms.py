@@ -1,14 +1,22 @@
+import re
 from django import forms
 from django.utils import timezone
-from .models import Asset, AssetAssignment,User
+from .models import Asset, AssetAssignment, User
+
 
 class BaseAssetForm(forms.ModelForm):
+    """
+    Base form for Asset creation and updates.
+    Contains shared validation logic inherited by AssetForm and AssetUpdateForm,
+    following the DRY principle to avoid duplicating validation across forms.
+    """
     class Meta:
         model = Asset
         fields = ["asset_name", "type", "last_pat_test", "end_of_warranty", "cost", "status"]
         widgets = {
             'last_pat_test': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
             'end_of_warranty': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
+            # Step attribute ensures browser allows two decimal places for currency input
             'cost': forms.NumberInput(attrs={'placeholder': '£0.00', 'step': '0.01'}),
         }
 
@@ -19,19 +27,25 @@ class BaseAssetForm(forms.ModelForm):
         return cost
 
     def clean_last_pat_test(self):
+        """PAT tests are historical records — a future date would be invalid."""
         date = self.cleaned_data.get("last_pat_test")
         if date and date > timezone.now().date():
             raise forms.ValidationError("PAT test date cannot be in the future.")
         return date
 
     def clean_asset_name(self):
+        """Prevent whitespace-only names which would pass CharField's blank check."""
         name = self.cleaned_data.get("asset_name")
         if name and not name.strip():
             raise forms.ValidationError("Asset name cannot be blank.")
         return name
 
-# validate the asset forms
+
 class AssetForm(BaseAssetForm):
+    """
+    Form for creating new assets. Extends BaseAssetForm with optional
+    assignment fields, allowing an asset to be assigned to a user in a single step.
+    """
     assign_to = forms.ModelChoiceField(
         queryset=User.objects.all(),
         required=False,
@@ -45,9 +59,11 @@ class AssetForm(BaseAssetForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Display full names instead of usernames in the dropdown
         self.fields['assign_to'].label_from_instance = lambda obj: obj.get_full_name() or obj.username
 
     def clean(self):
+        """Ensure both assignment fields are provided together or neither is provided."""
         cleaned_data = super().clean()
         assign_to = cleaned_data.get("assign_to")
         date_given = cleaned_data.get("date_given")
@@ -61,15 +77,21 @@ class AssetForm(BaseAssetForm):
 
         return cleaned_data
 
+
 class AssetUpdateForm(BaseAssetForm):
+    """
+    Form for editing existing assets. Inherits all validation from BaseAssetForm
+    but excludes the assignment fields since reassignment is handled separately.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Pre-fill with capitalised name for display, model.save() normalises back to lowercase
         if self.instance and self.instance.pk:
             self.initial['asset_name'] = self.instance.display_name()
 
 
-#validate the asset assignments forms
 class AssetAssignmentForm(forms.ModelForm):
+    """Form for creating and editing asset assignments with cross-field validation."""
     class Meta:
         model = AssetAssignment
         fields = ["user", "asset", "date_given", "date_retrieved"]
@@ -82,15 +104,20 @@ class AssetAssignmentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['user'].label_from_instance = lambda obj: obj.get_full_name() or obj.username
 
-    # check prevents the user entering a date in the future
     def clean_date_given(self):
+        """Assignment dates are historical records — a future date would be invalid."""
         date = self.cleaned_data.get("date_given")
         if date and date > timezone.now().date():
             raise forms.ValidationError("Date given cannot be in the future.")
         return date
 
-    #clean validates all fields of the form
     def clean(self):
+        """
+        Cross-field validation:
+        - date_retrieved must be after date_given (logical chronology)
+        - date_retrieved cannot be in the future
+        - an asset cannot be assigned if it already has an active assignment
+        """
         cleaned_data = super().clean()
         asset = cleaned_data.get("asset")
         date_given = cleaned_data.get("date_given")
@@ -102,6 +129,7 @@ class AssetAssignmentForm(forms.ModelForm):
         if date_retrieved and date_retrieved > timezone.now().date():
             raise forms.ValidationError("Date retrieved cannot be in the future.")
 
+        # Check for active assignments, excluding the current record during edits
         if asset:
             active_assignment = AssetAssignment.objects.filter(
                 asset=asset,
@@ -113,4 +141,3 @@ class AssetAssignmentForm(forms.ModelForm):
                 raise forms.ValidationError("This asset is already assigned to someone.")
 
         return cleaned_data
-
